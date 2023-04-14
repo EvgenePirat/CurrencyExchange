@@ -1,8 +1,8 @@
 package com.example.currencyexchange.entity;
 
-public class Currencies {
+public class Currency {
 
-    private int id;
+    private Long id;
 
     private String code;
 
@@ -10,17 +10,20 @@ public class Currencies {
 
     private String sign;
 
-    public Currencies(String code, String fullName, String sign) {
+    public Currency() {
+    }
+
+    public Currency(String code, String fullName, String sign) {
         this.code = code;
         this.fullName = fullName;
         this.sign = sign;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -51,9 +54,9 @@ public class Currencies {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Currencies)) return false;
+        if (!(o instanceof Currency)) return false;
 
-        Currencies that = (Currencies) o;
+        Currency that = (Currency) o;
 
         if (getId() != that.getId()) return false;
         return getCode().equals(that.getCode());
@@ -61,7 +64,7 @@ public class Currencies {
 
     @Override
     public int hashCode() {
-        int result = getId();
+        int result = Math.toIntExact(getId());
         result = 31 * result + getCode().hashCode();
         return result;
     }
