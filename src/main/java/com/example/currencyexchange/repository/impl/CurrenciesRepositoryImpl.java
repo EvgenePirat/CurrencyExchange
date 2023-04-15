@@ -28,40 +28,41 @@ public class CurrenciesRepositoryImpl implements CurrenciesRepository {
 
     @Override
     public Currency getCurrencyWithCode(String code) throws SQLException, CurrencyNotFoundException, CurrencyCodeNotFoundException, ClassNotFoundException {
-        Connection connection = ConnectionFactory.getConnection();
-        connection.setReadOnly(true);
-        PreparedStatement preparedStatement = connection.prepareStatement(GET_CURRENCY_WITH_CODE, ResultSet.CONCUR_READ_ONLY);
-        preparedStatement.setString(1,code);
-        try(ResultSet resultSet = preparedStatement.executeQuery()) {
-            if(resultSet == null) throw new ClassNotFoundException();
-            connection.close();
-            return CurrencyRowMapper.mapRow(resultSet);
+        try(Connection connection = ConnectionFactory.getConnection();) {
+            connection.setReadOnly(true);
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_CURRENCY_WITH_CODE);
+            preparedStatement.setString(1,code);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                return CurrencyRowMapper.mapRow(resultSet);
+            }
         }
     }
 
     @Override
     public Currency save(Currency currency) throws SQLException, CurrencyAlreadyExistException, ClassNotFoundException {
-        Connection connection = ConnectionFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CURRENCY, PreparedStatement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1,currency.getCode());
-        preparedStatement.setString(2,currency.getFullName());
-        preparedStatement.setString(3,currency.getSign());
-        preparedStatement.executeUpdate();
-        try(ResultSet resultSet = preparedStatement.getGeneratedKeys()){
-            if(resultSet == null) throw new CurrencyAlreadyExistException();
-            resultSet.next();
-            currency.setId(resultSet.getLong(1));
+        if(currency.getId() != -1) throw new CurrencyAlreadyExistException();
+        try(Connection connection = ConnectionFactory.getConnection();) {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CURRENCY, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1,currency.getCode());
+            preparedStatement.setString(2,currency.getFullName());
+            preparedStatement.setString(3,currency.getSign());
+            preparedStatement.executeUpdate();
+            try(ResultSet resultSet = preparedStatement.getGeneratedKeys()){
+                resultSet.next();
+                currency.setId(resultSet.getInt(1));
+            }
+            return currency;
         }
-        connection.close();
-        return currency;
     }
 
     @Override
     public List<Currency> getAllCurrencies() throws SQLException, ClassNotFoundException {
-        Connection connection = ConnectionFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CURRENCIES);
-        try(ResultSet resultSet = preparedStatement.executeQuery()){
-            return CurrencyRowMapper.mapRows(resultSet);
+        try(Connection connection = ConnectionFactory.getConnection();){
+            connection.setReadOnly(true);
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CURRENCIES);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                return CurrencyRowMapper.mapRows(resultSet);
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ package com.example.currencyexchange.entity;
 
 public class Currency {
 
-    private Long id;
+    private int id;
 
     private String code;
 
@@ -11,6 +11,7 @@ public class Currency {
     private String sign;
 
     public Currency() {
+        id = -1;
     }
 
     public Currency(String code, String fullName, String sign) {
@@ -19,11 +20,11 @@ public class Currency {
         this.sign = sign;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

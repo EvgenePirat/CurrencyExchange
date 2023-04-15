@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class ExchangeRates {
 
-    private Long id;
+    private int id;
 
     private Currency BaseCurrencyId;
 
@@ -12,17 +12,20 @@ public class ExchangeRates {
 
     private BigDecimal rate;
 
+    public ExchangeRates() {
+    }
+
     public ExchangeRates(Currency baseCurrencyId, Currency targetCurrencyId, BigDecimal rate) {
         BaseCurrencyId = baseCurrencyId;
         TargetCurrencyId = targetCurrencyId;
         this.rate = rate;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -67,7 +70,7 @@ public class ExchangeRates {
 
         ExchangeRates that = (ExchangeRates) o;
 
-        if (!getId().equals(that.getId())) return false;
+        if (getId() != that.getId()) return false;
         if (getBaseCurrencyId() != null ? !getBaseCurrencyId().equals(that.getBaseCurrencyId()) : that.getBaseCurrencyId() != null)
             return false;
         return getRate() != null ? getRate().equals(that.getRate()) : that.getRate() == null;
@@ -75,7 +78,7 @@ public class ExchangeRates {
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
+        int result = Integer.hashCode(getId());
         result = 31 * result + (getBaseCurrencyId() != null ? getBaseCurrencyId().hashCode() : 0);
         result = 31 * result + (getRate() != null ? getRate().hashCode() : 0);
         return result;
