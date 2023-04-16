@@ -2,6 +2,7 @@ package com.example.currencyexchange.controller;
 
 import com.example.currencyexchange.entity.ExchangeRates;
 import com.example.currencyexchange.exception.ExceptionBody;
+import com.example.currencyexchange.exception.ExchangeRateNotFoundException;
 import com.example.currencyexchange.service.ExchangeRatesService;
 import com.example.currencyexchange.service.impl.ExchangeRatesServiceImpl;
 import com.google.gson.Gson;
@@ -30,19 +31,21 @@ public class ExchangeRatesServlet extends HttpServlet {
                 String exchangeRatesListToJson = gson.toJson(exchangeRatesList);
                 response.setStatus(200);
                 response.getWriter().write(exchangeRatesListToJson);
+            }else {
+                String codeBasic = codePair.substring(0,3);
+                String codeTarget = codePair.substring(3,6);
+                ExchangeRates exchangeRates = exchangeRatesService.findWithCodePair(codeBasic,codeTarget);
+                String exchangeRatesInJson = gson.toJson(exchangeRates);
+                response.getWriter().write(exchangeRatesInJson);
             }
         }catch (IOException e){
-            response.setStatus(400);
-            String responseError = gson.toJson(new ExceptionBody("Required form field is missing", 400));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(400,"Required form field is missing",response);
         } catch (SQLException e) {
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD",response);
         } catch (ClassNotFoundException e) {
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD", response);
+        } catch (ExchangeRateNotFoundException e) {
+            response = getReadyResponse(404,"Exchange rate for pair not found",response);
         }
     }
 
@@ -57,17 +60,42 @@ public class ExchangeRatesServlet extends HttpServlet {
             String exchangeRatesInStringJson = gson.toJson(exchangeRatesAfterSave);
             response.getWriter().write(exchangeRatesInStringJson);
         }catch (IOException e){
-            response.setStatus(400);
-            String responseError = gson.toJson(new ExceptionBody("Required form field is missing", 400));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(400,"Required form field is missing",response);
         } catch (SQLException e) {
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD",response);
         } catch (ClassNotFoundException e) {
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD", response);
         }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            String codePair = request.getParameter("codePare");
+            String codeBasic = codePair.substring(0,3);
+            String codeTarget = codePair.substring(3,6);
+            ExchangeRates exchangeRates = gson.fromJson(request.getReader(), ExchangeRates.class);
+            ExchangeRates exchangeRatesAfterUpdate = exchangeRatesService.update(codeBasic,codeTarget,exchangeRates);
+            String exchangeRatesAfterUpdateInJson = gson.toJson(exchangeRatesAfterUpdate);
+            response.getWriter().write(exchangeRatesAfterUpdateInJson);
+        }catch (IOException e) {
+            response = getReadyResponse(400, "Required form field is missing", response);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            response = getReadyResponse(500,"Error with BD",response);
+        } catch (ClassNotFoundException e) {
+            response = getReadyResponse(500,"Error with BD", response);
+        } catch (ExchangeRateNotFoundException e) {
+            response = getReadyResponse(404,"Exchange rate for pair not found",response);
+        }
+    }
+
+    private HttpServletResponse getReadyResponse(int code, String message, HttpServletResponse response) throws IOException {
+        response.setStatus(code);
+        String responseError = gson.toJson(new ExceptionBody(message, code));
+        response.getWriter().write(responseError);
+        return response;
     }
 }

@@ -18,8 +18,7 @@ public class CurrencyRowMapper {
             currency.setCode(resultSet.getString("code"));
             currency.setFullName(resultSet.getString("full_name"));
             currency.setSign(resultSet.getString("sign"));
-        }
-        if(currency.getId() == -1){
+        }else {
             throw new CurrencyNotFoundException();
         }
         return currency;

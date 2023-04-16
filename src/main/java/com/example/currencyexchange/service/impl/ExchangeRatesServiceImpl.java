@@ -1,6 +1,7 @@
 package com.example.currencyexchange.service.impl;
 
 import com.example.currencyexchange.entity.ExchangeRates;
+import com.example.currencyexchange.exception.ExchangeRateNotFoundException;
 import com.example.currencyexchange.repository.ExchangeRatesRepository;
 import com.example.currencyexchange.repository.impl.ExchangeRatesRepositoryImpl;
 import com.example.currencyexchange.service.ExchangeRatesService;
@@ -20,5 +21,15 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
     @Override
     public List<ExchangeRates> getAll() throws SQLException, ClassNotFoundException {
         return exchangeRatesRepository.getAll();
+    }
+
+    @Override
+    public ExchangeRates findWithCodePair(String codeBasic, String codeTarget) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException {
+        return exchangeRatesRepository.findWithCodePair(codeBasic,codeTarget);
+    }
+
+    @Override
+    public ExchangeRates update(String codeBasic, String codeTarget, ExchangeRates exchangeRatesForUpdate) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException {
+        return exchangeRatesRepository.update(codeBasic,codeTarget,exchangeRatesForUpdate);
     }
 }
