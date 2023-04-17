@@ -70,6 +70,40 @@ public class CurrenciesServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            Currency currency = gson.fromJson(request.getReader(), Currency.class);
+            Currency currencyAfterUpdate = currenciesService.update(currency);
+            String currencyAfterUpdateToGson = gson.toJson(currencyAfterUpdate);
+            response.getWriter().write(currencyAfterUpdateToGson);
+        }catch (SQLException e){
+            response = getReadyResponse(500,"Error with BD", response);
+        } catch (ClassNotFoundException e) {
+            response = getReadyResponse(500,"Error with BD", response);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idCurrencies = request.getParameter("id");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try{
+            currenciesService.delete(Integer.valueOf(idCurrencies));
+            response.setStatus(200);
+            response = getReadyResponse(200,"deleted successfully",response);
+        }catch (SQLException e){
+            e.printStackTrace();
+            response = getReadyResponse(500,"Error with BD", response);
+        } catch (ClassNotFoundException e) {
+            response = getReadyResponse(500,"Error with BD", response);
+        }
+
+    }
+
     private HttpServletResponse getReadyResponse(int code, String message, HttpServletResponse response) throws IOException {
         response.setStatus(code);
         String responseError = gson.toJson(new ExceptionBody(message, code));

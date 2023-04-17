@@ -15,4 +15,8 @@ public interface CurrenciesService {
     Currency getCurrencyWithCode(String code) throws SQLException, CurrencyNotFoundException, CurrencyCodeNotFoundException, ClassNotFoundException;
 
     Currency save(Currency currency) throws SQLException, CurrencyAlreadyExistException, ClassNotFoundException;
+
+    void delete(int idCurrency) throws SQLException, ClassNotFoundException;
+
+    Currency update(Currency currencyForUpdate) throws SQLException, ClassNotFoundException;
 }

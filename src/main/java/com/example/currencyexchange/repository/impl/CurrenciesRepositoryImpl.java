@@ -25,9 +25,11 @@ public class CurrenciesRepositoryImpl implements CurrenciesRepository {
 
     private final String GET_ALL_CURRENCIES = "SELECT id, code, full_name, sign FROM currencies";
 
+    private final String DELETE_FROM_CURRENCIES = "DELETE FROM currencies WHERE id = ?;";
+
 
     @Override
-    public Currency getCurrencyWithCode(String code) throws SQLException, CurrencyNotFoundException, CurrencyCodeNotFoundException, ClassNotFoundException {
+    public Currency getCurrencyWithCode(String code) throws SQLException, CurrencyNotFoundException, ClassNotFoundException {
         try(Connection connection = ConnectionFactory.getConnection();) {
             connection.setReadOnly(true);
             PreparedStatement preparedStatement = connection.prepareStatement(GET_CURRENCY_WITH_CODE);
@@ -64,5 +66,27 @@ public class CurrenciesRepositoryImpl implements CurrenciesRepository {
                 return CurrencyRowMapper.mapRows(resultSet);
             }
         }
+    }
+
+    @Override
+    public void delete(int idCurrency) throws SQLException, ClassNotFoundException {
+        try(Connection connection = ConnectionFactory.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FROM_CURRENCIES);
+            preparedStatement.setInt(1,idCurrency);
+            preparedStatement.execute();
+        }
+    }
+
+    @Override
+    public Currency update(Currency currencyForUpdate) throws SQLException, ClassNotFoundException {
+        try(Connection connection = ConnectionFactory.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ExchangeRatesRepositoryImpl.UPDATE_CURRENCY);
+            preparedStatement.setString(1,currencyForUpdate.getCode());
+            preparedStatement.setString(2,currencyForUpdate.getFullName());
+            preparedStatement.setString(3,currencyForUpdate.getSign());
+            preparedStatement.setInt(4,currencyForUpdate.getId());
+            preparedStatement.execute();
+        }
+        return currencyForUpdate;
     }
 }

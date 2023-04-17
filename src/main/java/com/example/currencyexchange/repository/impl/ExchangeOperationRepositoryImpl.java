@@ -41,7 +41,7 @@ public class ExchangeOperationRepositoryImpl implements ExchangeOperationReposit
     @Override
     public ExchangeOperation converted(String codeBaseCurrency, String codeTargetCurrency, double amount) throws SQLException, ClassNotFoundException, ExchangeOperationNotFoundException {
         try (Connection connection = ConnectionFactory.getConnection()) {
-            connection.setAutoCommit(false);
+            connection.setReadOnly(true);
             PreparedStatement preparedStatement = connection.prepareStatement(GET_EXCHANGE_RATES_WITH_CODE);
             preparedStatement = setDateInPS(preparedStatement,codeBaseCurrency,codeTargetCurrency,amount);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
@@ -49,7 +49,6 @@ public class ExchangeOperationRepositoryImpl implements ExchangeOperationReposit
                     return ExchangeOperationRowMap.mapRowRight(resultSet,amount);
                 }else {
                     preparedStatement = setDateInPS(preparedStatement,codeTargetCurrency,codeBaseCurrency,amount);
-                    System.out.println(preparedStatement);
                     try(ResultSet resultSetRevers = preparedStatement.executeQuery()) {
                         if(checkResultSet(resultSetRevers)){
                             return ExchangeOperationRowMap.mapRowReverse(resultSetRevers,amount);
@@ -57,17 +56,12 @@ public class ExchangeOperationRepositoryImpl implements ExchangeOperationReposit
                     }
                 }
             }
-
         }
         throw new ExchangeOperationNotFoundException();
     }
 
     private boolean checkResultSet(ResultSet resultSet) throws SQLException {
-        if(resultSet.next()){
-            return true;
-        }else {
-            return false;
-        }
+        return resultSet.next() == true ? true : false;
     }
 
     private PreparedStatement setDateInPS(PreparedStatement preparedStatement,String codeBaseCurrency, String codeTargetCurrency, double amount) throws SQLException {

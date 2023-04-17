@@ -29,4 +29,14 @@ public class CurrenciesServiceImpl implements CurrenciesService {
     public Currency save(Currency currency) throws SQLException, CurrencyAlreadyExistException, ClassNotFoundException {
         return currenciesRepository.save(currency);
     }
+
+    @Override
+    public void delete(int idCurrency) throws SQLException, ClassNotFoundException {
+        currenciesRepository.delete(idCurrency);
+    }
+
+    @Override
+    public Currency update(Currency currencyForUpdate) throws SQLException, ClassNotFoundException {
+        return currenciesRepository.update(currencyForUpdate);
+    }
 }

@@ -64,7 +64,7 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRatesRepository {
             WHERE bc.code = ? AND tc.code = ?; 
             """;
 
-    private final String UPDATE_CURRENCY = """
+    public static final String UPDATE_CURRENCY = """
             UPDATE currencies SET code = ?, full_name = ?, sign = ? WHERE id = ?;
             """;
 

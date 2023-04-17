@@ -15,4 +15,8 @@ public interface CurrenciesRepository {
     Currency save(Currency currency) throws SQLException, CurrencyAlreadyExistException, ClassNotFoundException;
 
     List<Currency> getAllCurrencies() throws SQLException, ClassNotFoundException;
+
+    void delete(int idCurrency) throws SQLException, ClassNotFoundException;
+
+    Currency update(Currency currencyForUpdate) throws SQLException, ClassNotFoundException;
 }
