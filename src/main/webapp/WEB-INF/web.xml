@@ -23,6 +23,16 @@
         <servlet-name>ExchangeRatesServlet</servlet-name>
         <url-pattern>/exchangeRates</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ExchangeOperation</servlet-name>
+        <servlet-class>com.example.currencyexchange.controller.ExchangeOperationServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ExchangeOperation</servlet-name>
+        <url-pattern>/exchange</url-pattern>
+    </servlet-mapping>
     
     <listener>
         <listener-class>com.example.currencyexchange.service.ServletContextListener</listener-class>

@@ -38,7 +38,7 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRatesRepository {
 
     private final String GET_EXCHANGE_RATES_WITH_CODE = """
             SELECT 
-                er.id, 
+                er.id,  
                 JSON_OBJECT(
                     'id', bc.id,
                     'full_name', bc.full_name,

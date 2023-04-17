@@ -39,21 +39,13 @@ public class CurrenciesServlet extends HttpServlet {
                 response.getWriter().write(currencyInJson);
             }
         }catch (SQLException e){
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD", response);
         }catch (CurrencyNotFoundException e){
-            response.setStatus(404);
-            String responseError = gson.toJson(new ExceptionBody("Currency not found!", 404));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(404,"Currency not found!",response);
         }catch (CurrencyCodeNotFoundException e){
-            response.setStatus(400);
-            String responseError = gson.toJson(new ExceptionBody("Code not found!", 400));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(400,"Code not found!",response);
         } catch (ClassNotFoundException e) {
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD", response);
         }
     }
 
@@ -68,21 +60,20 @@ public class CurrenciesServlet extends HttpServlet {
             String currencyInJSON = gson.toJson(currencyAfterSave);
             response.getWriter().write(currencyInJSON);
         }catch (IOException e){
-            response.setStatus(400);
-            String responseError = gson.toJson(new ExceptionBody("Required form field is missing", 400));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(400,"Required form field is missing", response);
         }catch (CurrencyAlreadyExistException e){
-            response.setStatus(409);
-            String responseError = gson.toJson(new ExceptionBody("Currency with this code already exists", 409));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(409,"Currency with this code already exists",response);
         }catch (SQLException e){
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD", response);
         } catch (ClassNotFoundException e) {
-            response.setStatus(500);
-            String responseError = gson.toJson(new ExceptionBody("Error with BD", 500));
-            response.getWriter().write(responseError);
+            response = getReadyResponse(500,"Error with BD", response);
         }
+    }
+
+    private HttpServletResponse getReadyResponse(int code, String message, HttpServletResponse response) throws IOException {
+        response.setStatus(code);
+        String responseError = gson.toJson(new ExceptionBody(message, code));
+        response.getWriter().write(responseError);
+        return response;
     }
 }
