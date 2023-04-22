@@ -2,9 +2,8 @@ package com.example.currencyexchange.repository.impl;
 
 import com.example.currencyexchange.entity.ExchangeOperation;
 import com.example.currencyexchange.exception.ExchangeOperationNotFoundException;
-import com.example.currencyexchange.repository.ConnectionFactory;
+import com.example.currencyexchange.config.ConnectionFactory;
 import com.example.currencyexchange.repository.ExchangeOperationRepository;
-import com.example.currencyexchange.repository.ExchangeRatesRepository;
 import com.example.currencyexchange.repository.mappers.ExchangeOperationRowMap;
 
 import java.sql.Connection;

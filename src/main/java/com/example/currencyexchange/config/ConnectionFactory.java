@@ -1,4 +1,4 @@
-package com.example.currencyexchange.repository;
+package com.example.currencyexchange.config;
 
 import java.sql.Connection;
 import java.sql.Driver;

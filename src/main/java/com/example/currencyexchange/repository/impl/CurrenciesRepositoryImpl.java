@@ -2,9 +2,8 @@ package com.example.currencyexchange.repository.impl;
 
 import com.example.currencyexchange.entity.Currency;
 import com.example.currencyexchange.exception.CurrencyAlreadyExistException;
-import com.example.currencyexchange.exception.CurrencyCodeNotFoundException;
 import com.example.currencyexchange.exception.CurrencyNotFoundException;
-import com.example.currencyexchange.repository.ConnectionFactory;
+import com.example.currencyexchange.config.ConnectionFactory;
 import com.example.currencyexchange.repository.CurrenciesRepository;
 import com.example.currencyexchange.repository.mappers.CurrencyRowMapper;
 

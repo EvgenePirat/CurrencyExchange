@@ -23,10 +23,10 @@ public class CurrenciesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String code = request.getParameter("code");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try{
+            String code = request.getParameter("code");
             if(code == null){
                 List<Currency> currencyList = currenciesService.getAllCurrencies();
                 response.setStatus(200);
@@ -54,7 +54,7 @@ public class CurrenciesServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try {
-            Currency currencyForAdd = gson.fromJson(request.getReader(), Currency.class);
+            Currency currencyForAdd = (Currency) request.getAttribute("currency");
             Currency currencyAfterSave = currenciesService.save(currencyForAdd);
             response.setStatus(200);
             String currencyInJSON = gson.toJson(currencyAfterSave);
@@ -75,7 +75,7 @@ public class CurrenciesServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try {
-            Currency currency = gson.fromJson(request.getReader(), Currency.class);
+            Currency currency = (Currency) request.getAttribute("currency");
             Currency currencyAfterUpdate = currenciesService.update(currency);
             String currencyAfterUpdateToGson = gson.toJson(currencyAfterUpdate);
             response.getWriter().write(currencyAfterUpdateToGson);

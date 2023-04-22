@@ -1,6 +1,6 @@
-package com.example.currencyexchange.service;
+package com.example.currencyexchange.config;
 
-import com.example.currencyexchange.repository.ConnectionFactory;
+import com.example.currencyexchange.config.ConnectionFactory;
 import jakarta.servlet.ServletContextEvent;
 
 import java.sql.Connection;

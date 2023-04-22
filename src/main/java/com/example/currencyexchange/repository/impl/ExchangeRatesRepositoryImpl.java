@@ -2,7 +2,7 @@ package com.example.currencyexchange.repository.impl;
 
 import com.example.currencyexchange.entity.ExchangeRates;
 import com.example.currencyexchange.exception.ExchangeRateNotFoundException;
-import com.example.currencyexchange.repository.ConnectionFactory;
+import com.example.currencyexchange.config.ConnectionFactory;
 import com.example.currencyexchange.repository.ExchangeRatesRepository;
 import com.example.currencyexchange.repository.mappers.ExchangeRatesRowMapper;
 

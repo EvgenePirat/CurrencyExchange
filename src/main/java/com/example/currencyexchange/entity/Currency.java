@@ -1,13 +1,27 @@
 package com.example.currencyexchange.entity;
 
+import com.example.currencyexchange.config.validation.OnCreate;
+import com.example.currencyexchange.config.validation.OnUpdate;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class Currency {
 
+    @NotNull(message = "Id must be not null", groups = OnUpdate.class)
+    @Min(value = 0, message = "Id can not more zero", groups = OnUpdate.class)
     private int id;
 
+    @NotBlank(message = "Code must be not null", groups = {OnUpdate.class, OnCreate.class})
+    @Size(max = 3, message = "code must be 3 chars", groups = {OnUpdate.class, OnCreate.class})
     private String code;
 
+    @NotBlank(message = "FullName must be not null", groups = {OnUpdate.class, OnCreate.class})
     private String fullName;
 
+    @NotBlank(message = "Sign must be not null", groups = {OnUpdate.class, OnCreate.class})
+    @Size(max = 2, message = "Sign must be max from two char", groups = {OnUpdate.class, OnCreate.class})
     private String sign;
 
     public Currency() {

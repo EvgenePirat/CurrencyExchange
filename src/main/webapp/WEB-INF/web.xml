@@ -13,6 +13,16 @@
         <servlet-name>CurrenciesServlet</servlet-name>
         <url-pattern>/currency</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Error</servlet-name>
+        <jsp-file>/page_error.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Error</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
     
     <servlet>
         <servlet-name>ExchangeRatesServlet</servlet-name>
@@ -33,9 +43,19 @@
         <servlet-name>ExchangeOperation</servlet-name>
         <url-pattern>/exchange</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>CurrenciesFilter</filter-name>
+        <filter-class>com.example.currencyexchange.filter.CurrenciesFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CurrenciesFilter</filter-name>
+        <servlet-name>CurrenciesServlet</servlet-name>
+    </filter-mapping>
     
     <listener>
-        <listener-class>com.example.currencyexchange.service.ServletContextListener</listener-class>
+        <listener-class>com.example.currencyexchange.config.ServletContextListener</listener-class>
     </listener>
 
 </web-app>
