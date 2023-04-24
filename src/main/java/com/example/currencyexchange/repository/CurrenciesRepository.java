@@ -16,7 +16,7 @@ public interface CurrenciesRepository {
 
     List<Currency> getAllCurrencies() throws SQLException, ClassNotFoundException;
 
-    void delete(int idCurrency) throws SQLException, ClassNotFoundException;
+    void delete(int idCurrency) throws SQLException, ClassNotFoundException, CurrencyNotFoundException;
 
     Currency update(Currency currencyForUpdate) throws SQLException, ClassNotFoundException;
 }

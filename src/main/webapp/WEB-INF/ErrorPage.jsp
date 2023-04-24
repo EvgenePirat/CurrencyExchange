@@ -11,7 +11,7 @@
     <title>Error</title>
 </head>
 <body>
-    <h2 align="center">App get exception!</h2>
+    <h2 align="center"> Web App get exception!</h2>
     <c:if test="${not empty requestScope.error}">
         <div class="error">${requestScope.error}</div>
     </c:if>

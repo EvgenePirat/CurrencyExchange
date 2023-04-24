@@ -1,10 +1,7 @@
 package com.example.currencyexchange.controller;
 
 import com.example.currencyexchange.entity.Currency;
-import com.example.currencyexchange.exception.CurrencyAlreadyExistException;
-import com.example.currencyexchange.exception.CurrencyCodeNotFoundException;
-import com.example.currencyexchange.exception.CurrencyNotFoundException;
-import com.example.currencyexchange.exception.ExceptionBody;
+import com.example.currencyexchange.exception.*;
 import com.example.currencyexchange.service.CurrenciesService;
 import com.example.currencyexchange.service.impl.CurrenciesServiceImpl;
 import com.google.gson.Gson;
@@ -39,6 +36,7 @@ public class CurrenciesServlet extends HttpServlet {
                 response.getWriter().write(currencyInJson);
             }
         }catch (SQLException e){
+            e.printStackTrace();
             response = getReadyResponse(500,"Error with BD", response);
         }catch (CurrencyNotFoundException e){
             response = getReadyResponse(404,"Currency not found!",response);
@@ -59,8 +57,6 @@ public class CurrenciesServlet extends HttpServlet {
             response.setStatus(200);
             String currencyInJSON = gson.toJson(currencyAfterSave);
             response.getWriter().write(currencyInJSON);
-        }catch (IOException e){
-            response = getReadyResponse(400,"Required form field is missing", response);
         }catch (CurrencyAlreadyExistException e){
             response = getReadyResponse(409,"Currency with this code already exists",response);
         }catch (SQLException e){
@@ -74,7 +70,9 @@ public class CurrenciesServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        List<String> errorMessages = (List<String>) request.getAttribute("error");
         try {
+            if(errorMessages != null) throw new ValidationException();
             Currency currency = (Currency) request.getAttribute("currency");
             Currency currencyAfterUpdate = currenciesService.update(currency);
             String currencyAfterUpdateToGson = gson.toJson(currencyAfterUpdate);
@@ -83,6 +81,8 @@ public class CurrenciesServlet extends HttpServlet {
             response = getReadyResponse(500,"Error with BD", response);
         } catch (ClassNotFoundException e) {
             response = getReadyResponse(500,"Error with BD", response);
+        } catch (ValidationException e){
+            response = getReadyResponse(400, errorMessages.toString(),response);
         }
     }
 
@@ -91,7 +91,9 @@ public class CurrenciesServlet extends HttpServlet {
         String idCurrencies = request.getParameter("id");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        Boolean error = (Boolean) request.getAttribute("error");
         try{
+            if(error == null || error == true ) throw new ValidationException();
             currenciesService.delete(Integer.valueOf(idCurrencies));
             response.setStatus(200);
             response = getReadyResponse(200,"deleted successfully",response);
@@ -100,8 +102,11 @@ public class CurrenciesServlet extends HttpServlet {
             response = getReadyResponse(500,"Error with BD", response);
         } catch (ClassNotFoundException e) {
             response = getReadyResponse(500,"Error with BD", response);
+        } catch (ValidationException e){
+            response = getReadyResponse(400, "id not sent", response);
+        } catch (CurrencyNotFoundException e){
+            response = getReadyResponse(400, "Currency with id not found",response);
         }
-
     }
 
     private HttpServletResponse getReadyResponse(int code, String message, HttpServletResponse response) throws IOException {

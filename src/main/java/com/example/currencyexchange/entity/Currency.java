@@ -1,7 +1,7 @@
 package com.example.currencyexchange.entity;
 
-import com.example.currencyexchange.config.validation.OnCreate;
-import com.example.currencyexchange.config.validation.OnUpdate;
+import com.example.currencyexchange.service.validation.OnCreate;
+import com.example.currencyexchange.service.validation.OnUpdate;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +21,6 @@ public class Currency {
     private String fullName;
 
     @NotBlank(message = "Sign must be not null", groups = {OnUpdate.class, OnCreate.class})
-    @Size(max = 2, message = "Sign must be max from two char", groups = {OnUpdate.class, OnCreate.class})
     private String sign;
 
     public Currency() {

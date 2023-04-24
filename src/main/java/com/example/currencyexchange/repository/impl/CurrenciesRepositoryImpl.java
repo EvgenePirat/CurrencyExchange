@@ -2,6 +2,7 @@ package com.example.currencyexchange.repository.impl;
 
 import com.example.currencyexchange.entity.Currency;
 import com.example.currencyexchange.exception.CurrencyAlreadyExistException;
+import com.example.currencyexchange.exception.CurrencyCodeNotFoundException;
 import com.example.currencyexchange.exception.CurrencyNotFoundException;
 import com.example.currencyexchange.config.ConnectionFactory;
 import com.example.currencyexchange.repository.CurrenciesRepository;
@@ -26,11 +27,20 @@ public class CurrenciesRepositoryImpl implements CurrenciesRepository {
 
     private final String DELETE_FROM_CURRENCIES = "DELETE FROM currencies WHERE id = ?;";
 
+    private final String GET_CODE_WITH_CODE = "SELECT code FROM currencies WHERE code = ?";
+
+    private final String GET_ID_WITH_ID_FOR_CHECK = "SELECT id FROM currencies WHERE id = ?";
+
+
 
     @Override
-    public Currency getCurrencyWithCode(String code) throws SQLException, CurrencyNotFoundException, ClassNotFoundException {
-        try(Connection connection = ConnectionFactory.getConnection();) {
+    public Currency getCurrencyWithCode(String code) throws SQLException, CurrencyNotFoundException, ClassNotFoundException, CurrencyCodeNotFoundException {
+        try(Connection connection = ConnectionFactory.getConnection()) {
             connection.setReadOnly(true);
+            PreparedStatement preparedStatementForCheck = connection.prepareStatement(GET_CODE_WITH_CODE);
+            preparedStatementForCheck.setString(1,code);
+            ResultSet resultSetForCheck = preparedStatementForCheck.executeQuery();
+            if(resultSetForCheck.next() == false) throw new CurrencyCodeNotFoundException();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_CURRENCY_WITH_CODE);
             preparedStatement.setString(1,code);
             try(ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -68,11 +78,18 @@ public class CurrenciesRepositoryImpl implements CurrenciesRepository {
     }
 
     @Override
-    public void delete(int idCurrency) throws SQLException, ClassNotFoundException {
+    public void delete(int idCurrency) throws SQLException, ClassNotFoundException, CurrencyNotFoundException{
         try(Connection connection = ConnectionFactory.getConnection()) {
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatementForCheckId = connection.prepareStatement(GET_ID_WITH_ID_FOR_CHECK);
+            preparedStatementForCheckId.setInt(1,idCurrency);
+            ResultSet resultSetForCheckId = preparedStatementForCheckId.executeQuery();
+            if(resultSetForCheckId.next() == false) throw new CurrencyNotFoundException();
+
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FROM_CURRENCIES);
             preparedStatement.setInt(1,idCurrency);
             preparedStatement.execute();
+            connection.commit();
         }
     }
 

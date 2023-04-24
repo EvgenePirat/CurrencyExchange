@@ -31,7 +31,7 @@ public class CurrenciesServiceImpl implements CurrenciesService {
     }
 
     @Override
-    public void delete(int idCurrency) throws SQLException, ClassNotFoundException {
+    public void delete(int idCurrency) throws SQLException, ClassNotFoundException, CurrencyNotFoundException {
         currenciesRepository.delete(idCurrency);
     }
 
