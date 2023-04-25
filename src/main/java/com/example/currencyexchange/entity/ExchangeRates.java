@@ -1,15 +1,24 @@
 package com.example.currencyexchange.entity;
 
+import com.example.currencyexchange.service.validation.OnCreate;
+import com.example.currencyexchange.service.validation.OnUpdate;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 public class ExchangeRates {
 
     private int id;
 
+    @NotNull(message = "Base currency must be not null!", groups = {OnUpdate.class, OnCreate.class})
     private Currency BaseCurrencyId;
 
+    @NotNull(message = "Target currency must be not null!", groups = {OnUpdate.class, OnCreate.class})
     private Currency TargetCurrencyId;
 
+    @NotNull(message = "Rate must be not null!", groups = {OnUpdate.class, OnCreate.class})
+    @Min(value = 0, message = "Id can not more zero", groups = {OnUpdate.class, OnCreate.class})
     private BigDecimal rate;
 
     public ExchangeRates() {

@@ -1,6 +1,7 @@
 package com.example.currencyexchange.service.impl;
 
 import com.example.currencyexchange.entity.ExchangeRates;
+import com.example.currencyexchange.exception.CurrencyNotFoundException;
 import com.example.currencyexchange.exception.ExchangeRateNotFoundException;
 import com.example.currencyexchange.repository.ExchangeRatesRepository;
 import com.example.currencyexchange.repository.impl.ExchangeRatesRepositoryImpl;
@@ -31,5 +32,10 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
     @Override
     public ExchangeRates update(String codeBasic, String codeTarget, ExchangeRates exchangeRatesForUpdate) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException {
         return exchangeRatesRepository.update(codeBasic,codeTarget,exchangeRatesForUpdate);
+    }
+
+    @Override
+    public void delete(int id) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException {
+        exchangeRatesRepository.delete(id);
     }
 }

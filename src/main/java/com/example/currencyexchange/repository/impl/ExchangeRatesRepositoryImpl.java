@@ -20,13 +20,13 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRatesRepository {
                 er.id, 
                 JSON_OBJECT(
                     'id', bc.id,
-                    'full_name', bc.full_name,
+                    'fullName', bc.full_name,
                     'code', bc.code,
                     'sign', bc.sign
                 ) AS baseCurrency,
                 JSON_OBJECT(
                     'id', tc.id,
-                    'full_name', tc.full_name,
+                    'fullName', tc.full_name,
                     'code', tc.code,
                     'sign', tc.sign
                 ) AS targetCurrency,
@@ -71,6 +71,10 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRatesRepository {
     private final String UPDATE_EXCHANGE_RATES = """
             UPDATE exchange_rates er JOIN currencies bc ON er.base_currency_id = bc.id SET er.rate = ? WHERE er.id = ? AND er.base_currency_id = ?;
             """;
+
+    private final String GET_ID_WITH_ID_FOR_CHECK = "SELECT id from exchange_rates WHERE id = ?";
+
+    private final String DELETE_EXCHANGE_RATES_WITH_ID = "DELETE FROM exchange_rates WHERE id = ?";
 
     @Override
     public ExchangeRates save(ExchangeRates exchangeRates) throws SQLException, ClassNotFoundException {
@@ -136,10 +140,24 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRatesRepository {
             preparedStatementForUpdateExchangeRates.setBigDecimal(1,exchangeRatesForUpdate.getRate());
             preparedStatementForUpdateExchangeRates.setInt(2,idForUpdate);
             preparedStatementForUpdateExchangeRates.setInt(3,idBasicCurrency);
-            System.out.println(preparedStatementForUpdateExchangeRates);
             preparedStatementForUpdateExchangeRates.execute();
             connection.commit();
             return exchangeRatesForUpdate;
+        }
+    }
+
+    @Override
+    public void delete(int id) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException {
+        try (Connection connection = ConnectionFactory.getConnection()) {
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatementForCheck = connection.prepareStatement(GET_ID_WITH_ID_FOR_CHECK);
+            preparedStatementForCheck.setInt(1,id);
+            ResultSet resultSetAfterCheck = preparedStatementForCheck.executeQuery();
+            if(!resultSetAfterCheck.next()) throw new ExchangeRateNotFoundException();
+            PreparedStatement preparedStatementForDelete = connection.prepareStatement(DELETE_EXCHANGE_RATES_WITH_ID);
+            preparedStatementForDelete.setInt(1,id);
+            preparedStatementForDelete.execute();
+            connection.commit();
         }
     }
 

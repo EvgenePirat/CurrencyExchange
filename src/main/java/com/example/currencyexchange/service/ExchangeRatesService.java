@@ -16,4 +16,6 @@ public interface ExchangeRatesService {
 
     ExchangeRates update(String codeBasic, String codeTarget, ExchangeRates exchangeRatesForUpdate) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException;
 
+    void delete(int id) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException ;
+
 }

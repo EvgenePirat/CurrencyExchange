@@ -15,4 +15,6 @@ public interface ExchangeRatesRepository {
     ExchangeRates findWithCodePair(String codeBasic, String codeTarget) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException;
 
     ExchangeRates update(String codeBasic, String codeTarget, ExchangeRates exchangeRatesForUpdate) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException;
+
+    void delete(int id) throws SQLException, ClassNotFoundException, ExchangeRateNotFoundException ;
 }

@@ -89,8 +89,6 @@ public class CurrenciesServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idCurrencies = request.getParameter("id");
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         Boolean error = (Boolean) request.getAttribute("error");
         try{
             if(error == null || error == true ) throw new ValidationException();
